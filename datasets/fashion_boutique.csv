@@ -1,0 +1,16 @@
+product_id,product_name,category,price,cost,quantity,revenue,customer_rating,season
+F001,Summer Dress,Women,49.99,22.00,45,2249.55,4.6,Summer
+F002,Denim Jeans,Women,59.99,28.00,67,4019.33,4.3,All Season
+F003,Leather Belt,Accessories,29.99,12.00,123,3688.77,4.5,All Season
+F004,Wool Scarf,Accessories,34.99,14.50,34,1189.66,4.7,Winter
+F005,Cotton T-Shirt,Men,19.99,7.00,234,4677.66,4.1,Summer
+F006,Hoodie,Men,44.99,18.00,89,4004.11,4.4,Winter
+F007,Summer Hat,Accessories,24.99,9.50,156,3898.44,4.2,Summer
+F008,Winter Coat,Women,129.99,55.00,12,1559.88,4.8,Winter
+F009,Sneakers,Footwear,69.99,32.00,56,3919.44,4.5,All Season
+F010,Sandals,Footwear,39.99,16.00,78,3119.22,4.0,Summer
+F011,Sunglasses,Accessories,19.99,6.00,189,3778.11,4.3,Summer
+F012,Winter Boots,Footwear,89.99,42.00,23,2069.77,4.7,Winter
+F013,Cardigan,Women,54.99,24.00,45,2474.55,4.4,Spring/Fall
+F014,Swimwear,Women,44.99,18.00,34,1529.66,4.2,Summer
+F015,Beanie Hat,Accessories,14.99,4.50,167,2503.33,4.6,Winter

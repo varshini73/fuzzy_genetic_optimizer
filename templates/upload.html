@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}Upload & Optimize - Pricing Optimizer{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">
+        <i class="fas fa-cloud-upload-alt me-2"></i>
+        Upload & Optimize Product Data
+    </h2>
+    
+    <!-- Upload Section -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">1. Upload Data File</h5>
+                </div>
+                <div class="card-body">
+                    <form id="uploadForm">
+                        <div class="mb-3">
+                            <label for="fileInput" class="form-label">Select CSV or Excel File</label>
+                            <input type="file" class="form-control" id="fileInput" 
+                                   accept=".csv,.xlsx,.xls" required>
+                            <div class="form-text">
+                                File should contain columns like: price, cost, quantity, revenue, etc.
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" id="uploadBtn">
+                            <i class="fas fa-upload me-2"></i>Upload & Preview
+                        </button>
+                        
+                        <div class="spinner-border text-primary ms-2 d-none" id="uploadSpinner" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </form>
+                    
+                    <!-- Preview Section -->
+                    <div id="previewSection" class="mt-4 d-none">
+                        <h6>Data Preview:</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-striped" id="previewTable">
+                                <thead id="previewHeader"></thead>
+                                <tbody id="previewBody"></tbody>
+                            </table>
+                        </div>
+                        <div id="dataStats" class="alert alert-info"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">2. Optimization Parameters</h5>
+                </div>
+                <div class="card-body">
+                    <form id="optimizeForm">
+                        <div class="mb-3">
+                            <label for="populationSize" class="form-label">Population Size</label>
+                            <input type="number" class="form-control" id="populationSize" 
+                                   value="100" min="50" max="200">
+                            <div class="form-text">Number of individuals in GA population</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="generations" class="form-label">Generations</label>
+                            <input type="number" class="form-control" id="generations" 
+                                   value="100" min="50" max="300">
+                            <div class="form-text">Number of evolution cycles</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="mutationRate" class="form-label">Mutation Rate</label>
+                            <input type="number" class="form-control" id="mutationRate" 
+                                   value="0.1" min="0.01" max="0.3" step="0.01">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="crossoverRate" class="form-label">Crossover Rate</label>
+                            <input type="number" class="form-control" id="crossoverRate" 
+                                   value="0.8" min="0.5" max="1.0" step="0.05">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success w-100" id="optimizeBtn" disabled>
+                            <i class="fas fa-cogs me-2"></i>Start Optimization
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">3. Progress</h5>
+                </div>
+                <div class="card-body">
+                    <div id="progressSection" class="d-none">
+                        <div class="progress mb-3">
+                            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <p id="statusText" class="mb-2">Initializing...</p>
+                        <p id="timeElapsed" class="text-muted small"></p>
+                    </div>
+                    
+                    <div id="resultSection" class="d-none">
+                        <div class="alert alert-success">
+                            <h6>Optimization Complete!</h6>
+                            <p class="mb-2">Products optimized: <span id="productsOptimized">0</span></p>
+                            <p class="mb-2">Avg. price change: <span id="avgPriceChange">0%</span></p>
+                            <a href="/dashboard" class="btn btn-primary btn-sm w-100">
+                                <i class="fas fa-chart-line me-2"></i>View Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let uploadedFile = false;
+let currentTaskId = null;
+
+document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        alert('Please select a file');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    document.getElementById('uploadSpinner').classList.remove('d-none');
+    document.getElementById('uploadBtn').disabled = true;
+    
+    try {
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            uploadedFile = true;
+            document.getElementById('optimizeBtn').disabled = false;
+            
+            // Show preview
+            showPreview(result);
+            
+            // Show success message
+            alert(`File uploaded successfully! ${result.shape[0]} rows, ${result.shape[1]} columns`);
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        alert('Upload failed: ' + error.message);
+    } finally {
+        document.getElementById('uploadSpinner').classList.add('d-none');
+        document.getElementById('uploadBtn').disabled = false;
+    }
+});
+
+function showPreview(data) {
+    const preview = data.preview.data;
+    const columns = data.columns;
+    
+    // Build table header
+    const headerRow = document.getElementById('previewHeader');
+    headerRow.innerHTML = '<tr>' + columns.map(col => `<th>${col}</th>`).join('') + '</tr>';
+    
+    // Build table body
+    const tbody = document.getElementById('previewBody');
+    tbody.innerHTML = preview.map(row => 
+        '<tr>' + columns.map(col => `<td>${row[col] || ''}</td>`).join('') + '</tr>'
+    ).join('');
+    
+    // Show stats
+    const stats = data.preview.stats;
+    document.getElementById('dataStats').innerHTML = `
+        <strong>Dataset Statistics:</strong><br>
+        Total Rows: ${stats.total_rows}<br>
+        Missing Values: ${Object.values(stats.missing_values).reduce((a,b) => a+b, 0)}
+    `;
+    
+    document.getElementById('previewSection').classList.remove('d-none');
+}
+
+document.getElementById('optimizeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    if (!uploadedFile) {
+        alert('Please upload a file first');
+        return;
+    }
+    
+    const params = {
+        population_size: parseInt(document.getElementById('populationSize').value),
+        generations: parseInt(document.getElementById('generations').value),
+        mutation_rate: parseFloat(document.getElementById('mutationRate').value),
+        crossover_rate: parseFloat(document.getElementById('crossoverRate').value)
+    };
+    
+    document.getElementById('optimizeBtn').disabled = true;
+    document.getElementById('progressSection').classList.remove('d-none');
+    
+    try {
+        // Start optimization
+        const response = await fetch('/api/optimize', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(params)
+        });
+        
+        const result = await response.json();
+        currentTaskId = result.task_id;
+        
+        // Poll for status
+        pollStatus(currentTaskId);
+        
+    } catch (error) {
+        alert('Optimization failed: ' + error.message);
+        document.getElementById('optimizeBtn').disabled = false;
+    }
+});
+
+async function pollStatus(taskId) {
+    const startTime = Date.now();
+    
+    const interval = setInterval(async () => {
+        try {
+            const response = await fetch(`/api/status/${taskId}`);
+            const status = await response.json();
+            
+            // Update progress
+            document.getElementById('progressBar').style.width = status.progress + '%';
+            document.getElementById('progressBar').textContent = status.progress + '%';
+            document.getElementById('statusText').textContent = 
+                status.status.replace('_', ' ').toUpperCase();
+            
+            const elapsed = (Date.now() - startTime) / 1000;
+            document.getElementById('timeElapsed').textContent = 
+                `Elapsed: ${elapsed.toFixed(1)} seconds`;
+            
+            if (status.status === 'completed') {
+                clearInterval(interval);
+                showResults(status.result);
+            } else if (status.status === 'failed') {
+                clearInterval(interval);
+                alert('Optimization failed: ' + status.error);
+                document.getElementById('optimizeBtn').disabled = false;
+            }
+            
+        } catch (error) {
+            clearInterval(interval);
+            alert('Error checking status: ' + error.message);
+        }
+    }, 1000);
+}
+
+function showResults(result) {
+    document.getElementById('progressSection').classList.add('d-none');
+    document.getElementById('resultSection').classList.remove('d-none');
+    
+    document.getElementById('productsOptimized').textContent = 
+        result.summary.total_products;
+    document.getElementById('avgPriceChange').textContent = 
+        result.summary.avg_price_change.toFixed(2) + '%';
+    
+    // Store task ID for dashboard
+    localStorage.setItem('lastTaskId', currentTaskId);
+}
+</script>
+{% endblock %}

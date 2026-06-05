@@ -1,0 +1,21 @@
+product_id,product_name,category,price,cost,quantity,revenue,customer_rating,competitor_price
+E001,Wireless Earbuds,Audio,49.99,22.50,156,7798.44,4.3,54.99
+E002,Phone Charger Cable,Accessories,12.99,3.20,892,11587.08,4.1,11.99
+E003,Bluetooth Speaker,Audio,79.99,35.00,67,5359.33,4.6,89.99
+E004,Laptop Stand,Accessories,34.99,12.50,123,4303.77,4.4,39.99
+E005,USB-C Hub,Accessories,45.99,18.00,89,4093.11,4.7,49.99
+E006,Webcam HD,Computer,59.99,25.00,45,2699.55,4.2,64.99
+E007,Mechanical Keyboard,Computer,89.99,42.00,34,3059.66,4.8,99.99
+E008,Gaming Mouse,Computer,39.99,15.50,78,3119.22,4.5,44.99
+E009,Monitor Stand,Accessories,29.99,11.00,56,1679.44,4.0,34.99
+E010,Desk Lamp,Home Office,24.99,9.50,234,5847.66,4.3,27.99
+E011,Noise Cancelling Headphones,Audio,149.99,65.00,23,3449.77,4.9,169.99
+E012,Smart Watch,Fitness,199.99,85.00,12,2399.88,4.4,219.99
+E013,Tablet Stand,Accessories,19.99,6.50,167,3338.33,4.1,22.99
+E014,Wireless Mouse,Computer,24.99,8.50,345,8621.55,4.3,27.99
+E015,HDMI Cable 6ft,Accessories,9.99,2.20,678,6773.22,4.6,8.99
+E016,Power Bank 10000mAh,Accessories,29.99,14.00,234,7017.66,4.5,34.99
+E017,Ring Light,Content Creation,39.99,16.00,89,3559.11,4.7,44.99
+E018,Microphone USB,Audio,69.99,28.00,34,2379.66,4.8,79.99
+E019,Desk Mat Large,Accessories,19.99,7.50,156,3118.44,4.2,24.99
+E020,Wireless Charger,Accessories,22.99,9.00,234,5379.66,4.4,27.99

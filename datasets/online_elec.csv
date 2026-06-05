@@ -1,0 +1,16 @@
+product_id,product_name,category,price,cost,quantity,revenue,customer_rating,competitor_price,season
+E001,Wireless Mouse,Accessories,24.99,10.50,456,11395.44,4.3,27.99,All Season
+E002,Mechanical Keyboard,Gaming,79.99,38.00,123,9838.77,4.7,89.99,Holiday
+E003,USB-C Hub 7in1,Accessories,39.99,18.00,234,9357.66,4.5,44.99,All Season
+E004,Webcam 1080p,Streaming,49.99,22.00,189,9448.11,4.4,54.99,All Season
+E005,Ring Light 10",Streaming,29.99,13.00,345,10346.55,4.6,34.99,All Season
+E006,Bluetooth Speaker,Audio,59.99,28.00,134,8038.66,4.5,69.99,Summer
+E007,Wireless Earbuds,Audio,39.99,18.00,456,18235.44,4.1,44.99,All Season
+E008,Phone Stand,Accessories,14.99,5.50,678,10163.22,4.2,16.99,All Season
+E009,Desk Lamp LED,Lighting,34.99,15.00,234,8187.66,4.6,39.99,All Season
+E010,Monitor Riser,Ergonomics,29.99,12.50,189,5668.11,4.3,34.99,All Season
+E011,Laptop Sleeve 15",Accessories,19.99,8.00,345,6896.55,4.4,22.99,Back to School
+E012,Power Strip 6outlet,Accessories,24.99,10.00,567,14169.33,4.5,27.99,All Season
+E013,HDMI Cable 6ft,Accessories,9.99,3.50,892,8911.08,4.6,11.99,All Season
+E014,Microphone USB,Streaming,69.99,32.00,89,6229.11,4.7,79.99,All Season
+E015,External SSD 500GB,Storage,79.99,42.00,156,12478.44,4.8,89.99,Holiday

@@ -1,0 +1,573 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Pricing Optimizer{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">
+        <i class="fas fa-tachometer-alt me-2"></i>
+        Optimization Dashboard
+    </h2>
+    
+    <!-- Summary Cards -->
+    <div class="row mb-4" id="summaryCards">
+        <!-- Populated by JavaScript -->
+    </div>
+    
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Price Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="priceDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Price Change Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="priceChangeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- GA Convergence & Fuzzy Membership -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">GA Convergence</h5>
+                </div>
+                <div class="card-body">
+                    <div id="convergenceChart" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Fuzzy Adjustment Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <div id="fuzzyChart" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recommendations Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Top Recommendations</h5>
+                    <button class="btn btn-sm btn-success" id="exportBtn">
+                        <i class="fas fa-download me-2"></i>Export Results
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="recommendationsTable">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Current Price</th>
+                                    <th>Optimal Price</th>
+                                    <th>Change</th>
+                                    <th>Expected Impact</th>
+                                    <th>Priority</th>
+                                    <th>Risk</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recommendationsBody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Add this before closing body tag -->
+<div class="modal fade" id="explanationModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    Why This Price?
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="explanationContent">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const taskId = localStorage.getItem('lastTaskId');
+    
+    if (!taskId) {
+        alert('No optimization results found. Please run optimization first.');
+        window.location.href = '/upload';
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/results/${taskId}`);
+        const results = await response.json();
+        
+        // Render dashboard
+        renderSummaryCards(results);
+        renderPriceDistribution(results);
+        renderPriceChangeAnalysis(results);
+        renderConvergenceChart(results);
+        renderFuzzyChart(results);
+        renderRecommendations(results);
+        
+        // Setup export
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            window.location.href = `/api/export/${taskId}`;
+        });
+        
+    } catch (error) {
+        console.error('Error loading results:', error);
+        alert('Error loading results. Please try again.');
+    }
+});
+
+function renderSummaryCards(results) {
+    const summary = results.final_results.summary_stats || results.summary_stats;
+    const html = `
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h6>Products Optimized</h6>
+                    <h2>${summary.total_products}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6>Avg Price Change</h6>
+                    <h2>${summary.avg_price_change.toFixed(2)}%</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h6>Price Increases</h6>
+                    <h2>${summary.price_increases}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h6>Price Decreases</h6>
+                    <h2>${summary.price_decreases}</h2>
+                </div>
+            </div>
+        </div>
+    `;
+    document.getElementById('summaryCards').innerHTML = html;
+}
+
+function renderPriceDistribution(results) {
+    const prices = results.final_results.optimized_prices.map(r => r.optimal_price);
+    const currentPrices = results.final_results.optimized_prices.map(r => r.current_price);
+    
+    // Create bins
+    const allPrices = [...prices, ...currentPrices];
+    const minPrice = Math.min(...allPrices);
+    const maxPrice = Math.max(...allPrices);
+    const binCount = 15;
+    const binWidth = (maxPrice - minPrice) / binCount;
+    
+    const optimalBins = new Array(binCount).fill(0);
+    const currentBins = new Array(binCount).fill(0);
+    const labels = [];
+    
+    for (let i = 0; i < binCount; i++) {
+        const binStart = minPrice + i * binWidth;
+        const binEnd = binStart + binWidth;
+        labels.push(`$${binStart.toFixed(0)}-${binEnd.toFixed(0)}`);
+        
+        prices.forEach(price => {
+            if (price >= binStart && price < binEnd) optimalBins[i]++;
+        });
+        
+        currentPrices.forEach(price => {
+            if (price >= binStart && price < binEnd) currentBins[i]++;
+        });
+    }
+    
+    const ctx = document.getElementById('priceDistributionChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Optimal Prices',
+                data: optimalBins,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgb(54, 162, 235)',
+                borderWidth: 1
+            }, {
+                label: 'Current Prices',
+                data: currentBins,
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderColor: 'rgb(255, 99, 132)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Current vs Optimal Price Distribution'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Products'
+                    }
+                },
+                x: {
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }
+            }
+        }
+    });
+}
+
+function renderPriceChangeAnalysis(results) {
+    const changes = results.final_results.optimized_prices.map(r => r.price_change_percent);
+    const bins = [-30, -20, -10, -5, 0, 5, 10, 20, 30];
+    const labels = ['<-20%', '-20% to -10%', '-10% to -5%', '-5% to 0%', 
+                    '0% to 5%', '5% to 10%', '10% to 20%', '>20%'];
+    
+    const counts = new Array(labels.length).fill(0);
+    changes.forEach(change => {
+        for (let i = 0; i < bins.length - 1; i++) {
+            if (change >= bins[i] && change < bins[i+1]) {
+                counts[i]++;
+                break;
+            }
+        }
+    });
+    
+    const ctx = document.getElementById('priceChangeChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Number of Products',
+                data: counts,
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgb(75, 192, 192)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Price Change Distribution'
+                }
+            }
+        }
+    });
+}
+
+function renderConvergenceChart(results) {
+    const history = results.ga_results.optimization_history;
+    
+    const trace1 = {
+        y: history.best_fitness,
+        type: 'scatter',
+        mode: 'lines',
+        name: 'Best Fitness',
+        line: {color: 'green', width: 2}
+    };
+    
+    const trace2 = {
+        y: history.avg_fitness,
+        type: 'scatter',
+        mode: 'lines',
+        name: 'Average Fitness',
+        line: {color: 'blue', width: 1, dash: 'dot'}
+    };
+    
+    const layout = {
+        title: 'Genetic Algorithm Convergence',
+        xaxis: {title: 'Generation'},
+        yaxis: {title: 'Fitness Score'},
+        margin: {t: 40, r: 20, l: 50, b: 40}
+    };
+    
+    Plotly.newPlot('convergenceChart', [trace1, trace2], layout);
+}
+
+function renderFuzzyChart(results) {
+    const adjustments = results.fuzzy_results.individual_results.map(r => r.price_adjustment_percent);
+    
+    const trace = {
+        x: adjustments,
+        type: 'histogram',
+        name: 'Adjustments',
+        marker: {color: 'purple'},
+        opacity: 0.7
+    };
+    
+    const layout = {
+        title: 'Fuzzy Logic Adjustment Distribution',
+        xaxis: {title: 'Price Adjustment (%)'},
+        yaxis: {title: 'Frequency'},
+        margin: {t: 40, r: 20, l: 50, b: 40}
+    };
+    
+    Plotly.newPlot('fuzzyChart', [trace], layout);
+}
+function renderRecommendations(results) {
+    const recommendations = results.recommendations.slice(0, 20);
+    window.currentResults = results; // Store for modal
+    
+    const tbody = document.getElementById('recommendationsBody');
+    tbody.innerHTML = recommendations.map(rec => `
+        <tr onclick="showExplanation('${rec.product_id}')" style="cursor: pointer;" 
+            data-product-id="${rec.product_id}"
+            data-product-name="${rec.product_name}"
+            data-current-price="${rec.current_price}"
+            data-recommended-price="${rec.recommended_price}"
+            data-expected-impact="${rec.expected_impact}"
+            data-expected-profit="${rec.expected_profit_impact}"
+            data-priority="${rec.priority}"
+            data-risk="${rec.risk_level}"
+            data-confidence="${rec.confidence_score || rec.priority}"
+            data-fuzzy-rec="${rec.fuzzy_recommendation || 'N/A'}"
+            data-timeline="${rec.implementation_timeline}"
+            data-reasoning="${rec.detailed_reasoning || ''}">
+            <td>
+                <strong>${rec.product_name}</strong>
+                <br>
+                <small class="text-muted">${rec.product_id}</small>
+            </td>
+            <td>$${rec.current_price.toFixed(2)}</td>
+            <td>$${rec.recommended_price.toFixed(2)}</td>
+            <td class="${rec.expected_impact.includes('+') ? 'text-success' : 'text-danger'} fw-bold">
+                ${rec.expected_impact}
+            </td>
+            <td>${rec.expected_profit_impact}</td>
+            <td>
+                <div class="d-flex flex-column">
+                    <div class="progress mb-1" style="height: 20px;">
+                        <div class="progress-bar" style="width: ${rec.priority}%">
+                            ${rec.priority.toFixed(0)}%
+                        </div>
+                    </div>
+                    <small class="text-muted">Priority</small>
+                </div>
+            </td>
+            <td>
+                <div class="d-flex flex-column">
+                    <span class="badge bg-${getConfidenceColor(rec.confidence_score || rec.priority)} mb-1">
+                        <i class="fas fa-${getConfidenceIcon(rec.confidence_score || rec.priority)} me-1"></i>
+                        ${(rec.confidence_score || rec.priority).toFixed(0)}% Confidence
+                    </span>
+                    <span class="badge bg-${rec.risk_level === 'Low' ? 'success' : 
+                                              rec.risk_level === 'Medium' ? 'warning' : 'danger'}">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        ${rec.risk_level} Risk
+                    </span>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Add these helper functions
+function getConfidenceColor(confidence) {
+    if (confidence >= 80) return 'success';
+    if (confidence >= 60) return 'warning';
+    return 'danger';
+}
+
+function getConfidenceIcon(confidence) {
+    if (confidence >= 80) return 'check-circle';
+    if (confidence >= 60) return 'exclamation-circle';
+    return 'exclamation-triangle';
+}
+
+// Add this function for the modal
+function showExplanation(productId) {
+    // Find the clicked row
+    const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+    if (!row) return;
+    
+    // Get data from attributes
+    const productName = row.dataset.productName;
+    const currentPrice = parseFloat(row.dataset.currentPrice);
+    const recommendedPrice = parseFloat(row.dataset.recommendedPrice);
+    const expectedImpact = row.dataset.expectedImpact;
+    const expectedProfit = row.dataset.expectedProfit;
+    const priority = parseFloat(row.dataset.priority);
+    const risk = row.dataset.risk;
+    const confidence = parseFloat(row.dataset.confidence);
+    const fuzzyRec = row.dataset.fuzzyRec;
+    const timeline = row.dataset.timeline;
+    const reasoning = row.dataset.reasoning;
+    
+    // Determine if price increase or decrease
+    const isIncrease = expectedImpact.includes('+');
+    
+    // Generate explanation HTML
+    const html = `
+        <h4>
+            <i class="fas fa-tag me-2"></i>
+            ${productName}
+        </h4>
+        <hr>
+        
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="text-muted">Price Recommendation</h6>
+                        <h3>
+                            $${currentPrice.toFixed(2)} 
+                            <i class="fas fa-arrow-right mx-2"></i> 
+                            <span class="text-${isIncrease ? 'success' : 'danger'}">
+                                $${recommendedPrice.toFixed(2)}
+                            </span>
+                        </h3>
+                        <span class="badge bg-${isIncrease ? 'success' : 'danger'}">
+                            ${expectedImpact}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="text-muted">Confidence Assessment</h6>
+                        <div class="progress mb-2" style="height: 30px;">
+                            <div class="progress-bar bg-${getConfidenceColor(confidence)}" 
+                                 style="width: ${confidence}%">
+                                ${confidence.toFixed(0)}% Confidence
+                            </div>
+                        </div>
+                        <p class="mb-1">
+                            <i class="fas fa-${getConfidenceIcon(confidence)} me-2"></i>
+                            ${confidence >= 80 ? 'High confidence - Implement immediately' : 
+                              confidence >= 60 ? 'Moderate confidence - Monitor results' : 
+                              'Low confidence - Gather more data first'}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            Why This Recommendation?
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="lead">${reasoning || 'Market analysis suggests this optimal price point'}</p>
+                        
+                        <h6>Key Factors:</h6>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <i class="fas fa-brain text-primary me-2"></i>
+                                <strong>Fuzzy Logic Analysis:</strong> ${fuzzyRec}
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-dollar-sign text-success me-2"></i>
+                                <strong>Expected Profit Impact:</strong> ${expectedProfit}
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-clock text-info me-2"></i>
+                                <strong>Implementation Timeline:</strong> ${timeline}
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-shield-alt text-warning me-2"></i>
+                                <strong>Risk Level:</strong> 
+                                <span class="badge bg-${risk === 'Low' ? 'success' : 
+                                                          risk === 'Medium' ? 'warning' : 'danger'}">
+                                    ${risk}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Priority Score:</strong> ${priority.toFixed(0)}% - 
+            ${priority >= 80 ? 'High priority - Consider immediate action' : 
+              priority >= 60 ? 'Medium priority - Plan implementation' : 
+              'Low priority - Can be scheduled later'}
+        </div>
+    `;
+    
+    document.getElementById('explanationContent').innerHTML = html;
+    new bootstrap.Modal(document.getElementById('explanationModal')).show();
+}
+</script>
+<!-- Explanation Modal -->
+<div class="modal fade" id="explanationModal" tabindex="-1" aria-labelledby="explanationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-gradient-primary text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <h5 class="modal-title" id="explanationModalLabel">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Pricing Recommendation Analysis
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="explanationContent">
+                <!-- Populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="window.print()">
+                    <i class="fas fa-print me-2"></i>Print Analysis
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'chatbot_widget.html' %}
+{% endblock %}

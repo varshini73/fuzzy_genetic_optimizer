@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Explain — FuzzyPrice AI{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="fas fa-lightbulb me-2 text-accent"></i>
+            Pricing Explanation
+        </h2>
+        <a href="/dashboard" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+
+    <div class="explanation-card">
+        <h4><i class="fas fa-tag me-2 text-accent"></i>Why this price?</h4>
+        <p style="color:var(--muted)" class="mb-4">
+            The section below breaks down every factor the Fuzzy-Genetic engine used to arrive at
+            the recommended price for this product.
+        </p>
+
+        <!-- Waterfall chart showing factor contributions -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2 text-accent"></i>Factor Contribution (Waterfall)
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="waterfallChart" style="height:350px;"></div>
+            </div>
+        </div>
+
+        <!-- Feature importance radar -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-spider me-2 text-accent"></i>Feature Importance Radar
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="radarChart" style="height:350px;"></div>
+            </div>
+        </div>
+
+        <!-- Decision path -->
+        <div class="decision-path">
+            <h5><i class="fas fa-project-diagram me-2"></i>Fuzzy Logic Decision Path</h5>
+            <p style="color:var(--muted);font-size:0.9rem" class="mb-3">
+                Each rule that fired during inference is listed below with its activation strength.
+            </p>
+            <div id="decisionTree">
+                <!-- Populated by JS / server -->
+                <div class="text-center py-4" style="color:var(--muted)">
+                    <i class="fas fa-spinner fa-spin me-2"></i>Loading decision path…
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ── Placeholder charts — replace data with your real API payload ── */
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderWaterfall();
+    renderRadar();
+    renderDecisionTree();
+});
+
+function renderWaterfall() {
+    const factors = ['Base Price', 'Demand', 'Competition', 'Seasonality', 'Quality', 'Margin', 'Final Price'];
+    const values  = [100, 8, -5, 3, 6, -2, 110];   // replace with real data
+    const colors  = values.map((v, i) => {
+        if (i === 0 || i === values.length - 1) return '#38bdf8';
+        return v >= 0 ? '#34d399' : '#f87171';
+    });
+
+    Plotly.newPlot('waterfallChart', [{
+        type: 'waterfall',
+        name: 'Price factors',
+        orientation: 'v',
+        x: factors,
+        y: values,
+        connector: { line: { color: '#334155', width: 1 } },
+        increasing: { marker: { color: '#34d399' } },
+        decreasing: { marker: { color: '#f87171' } },
+        totals:     { marker: { color: '#38bdf8' } }
+    }], {
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor:  'rgba(0,0,0,0)',
+        font:    { color: '#e2e8f0', family: 'Syne, Inter, sans-serif' },
+        xaxis:   { gridcolor: '#334155', tickfont: { color: '#94a3b8' } },
+        yaxis:   { gridcolor: '#334155', tickfont: { color: '#94a3b8' }, title: 'Price (₹/$)' },
+        margin:  { t: 20, r: 20, l: 60, b: 60 }
+    }, { responsive: true });
+}
+
+function renderRadar() {
+    const labels = ['Demand', 'Competition', 'Quality', 'Seasonality', 'Margin'];
+    const scores = [0.8, 0.55, 0.7, 0.4, 0.65]; // replace with real data
+
+    Plotly.newPlot('radarChart', [{
+        type: 'scatterpolar',
+        r: scores,
+        theta: labels,
+        fill: 'toself',
+        fillcolor: 'rgba(56,189,248,0.15)',
+        line: { color: '#38bdf8', width: 2 },
+        name: 'Feature Importance'
+    }], {
+        polar: {
+            bgcolor: 'rgba(0,0,0,0)',
+            radialaxis: {
+                visible: true,
+                range: [0, 1],
+                gridcolor: '#334155',
+                tickfont: { color: '#94a3b8' }
+            },
+            angularaxis: { gridcolor: '#334155', tickfont: { color: '#e2e8f0' } }
+        },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        font:   { color: '#e2e8f0', family: 'Syne, Inter, sans-serif' },
+        margin: { t: 20, r: 40, l: 40, b: 20 }
+    }, { responsive: true });
+}
+
+function renderDecisionTree() {
+    /* Replace this with your actual fuzzy rule data */
+    const rules = [
+        { id: 'R01', desc: 'IF demand IS high AND competition IS low THEN adjustment IS increase_large',   strength: 0.82 },
+        { id: 'R04', desc: 'IF season IS peak AND quality IS high THEN adjustment IS increase_medium',     strength: 0.67 },
+        { id: 'R09', desc: 'IF margin IS low AND competition IS high THEN adjustment IS decrease_small',   strength: 0.44 },
+        { id: 'R14', desc: 'IF demand IS medium AND season IS normal THEN adjustment IS maintain',         strength: 0.31 },
+    ];
+
+    const container = document.getElementById('decisionTree');
+    container.innerHTML = rules.map(r => `
+        <div class="mb-3 p-3 rounded" style="background:rgba(56,189,248,0.05);border:1px solid rgba(56,189,248,0.15)">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge badge-accent">${r.id}</span>
+                <small style="color:var(--muted)">Activation: <strong style="color:var(--accent)">${(r.strength * 100).toFixed(0)}%</strong></small>
+            </div>
+            <p style="color:var(--text);font-size:0.88rem;margin:0 0 0.5rem">${r.desc}</p>
+            <div class="progress" style="height:6px;">
+                <div class="progress-bar" style="width:${r.strength * 100}%;background:var(--accent);border-radius:10px;"></div>
+            </div>
+        </div>
+    `).join('');
+}
+</script>
+{% endblock %}

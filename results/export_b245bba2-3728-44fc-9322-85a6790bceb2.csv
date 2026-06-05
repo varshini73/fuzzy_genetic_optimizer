@@ -1,0 +1,9 @@
+product_id,product_name,current_price,recommended_price,expected_impact,expected_profit_impact,priority,implementation_timeline,risk_level,detailed_reasoning
+PROD_3,Product 3,100,77.0,-23.0%,$716.10,81.5,Phased (2-3 weeks),Low,Competitive pressure suggests price reduction; High confidence in recommendation; Based on Small Decrease fuzzy logic classification
+PROD_5,Product 5,100,82.5,-17.5%,"$1,271.88",80.5,Short-term (1-2 weeks),Low,Competitive pressure suggests price reduction; High confidence in recommendation; Based on Small Increase fuzzy logic classification
+PROD_2,Product 2,100,120.0,+20.0%,"$4,900.00",75.0,Short-term (1-2 weeks),High,Strong demand indicators support price increase; Based on maintain fuzzy logic classification
+PROD_0,Product 0,100,86.25,-13.8%,"$1,647.34",73.0,Short-term (1-2 weeks),Low,Competitive pressure suggests price reduction; High confidence in recommendation; Based on Maintain fuzzy logic classification
+PROD_6,Product 6,100,116.25,+16.2%,"$4,549.84",67.5,Short-term (1-2 weeks),High,Strong demand indicators support price increase; Based on maintain fuzzy logic classification
+PROD_7,Product 7,100,90.0,-10.0%,"$2,020.00",65.5,Immediate,Low,Competitive pressure suggests price reduction; High confidence in recommendation; Based on Small Decrease fuzzy logic classification
+PROD_1,Product 1,100,101.25,+1.2%,"$3,121.09",48.0,Immediate,Low,Strong demand indicators support price increase; High confidence in recommendation; Based on Small Decrease fuzzy logic classification
+PROD_4,Product 4,100,105.0,+5.0%,"$3,482.50",45.0,Immediate,High,Strong demand indicators support price increase; Based on maintain fuzzy logic classification

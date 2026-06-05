@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% block title %}About - FuzzyPrice AI{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+
+            <div class="card shadow-lg">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">
+                        <i class="fas fa-microchip me-2 text-accent"></i>
+                        About This Project
+                    </h2>
+
+                    <!-- Abstract -->
+                    <div class="alert alert-info mb-4">
+                        <h5 class="mb-2"><i class="fas fa-scroll me-2 text-accent"></i>Academic Abstract</h5>
+                        <p class="mb-0">
+                            Small-scale local businesses often struggle to determine optimal product pricing due to
+                            uncertain market conditions, fluctuating demand, and varying competition. Incorrect pricing
+                            leads to profit loss or reduced customer retention. This project presents a
+                            <strong class="text-accent">Fuzzy-Genetic Micro-Business Pricing Optimizer</strong> —
+                            an intelligent decision-support system designed to assist local sellers in setting
+                            effective product prices.
+                        </p>
+                    </div>
+
+                    <!-- Architecture -->
+                    <h5 class="mt-4 mb-3">
+                        <i class="fas fa-sitemap me-2 text-accent"></i>Technical Architecture
+                    </h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="text-accent mb-2">
+                                        <i class="fas fa-brain me-2"></i>Fuzzy Logic System
+                                    </h6>
+                                    <p class="small mb-0">
+                                        Mamdani inference engine with 18+ linguistic rules.
+                                        Handles uncertainty via membership functions for demand,
+                                        competition, quality, and season.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="text-accent mb-2">
+                                        <i class="fas fa-dna me-2"></i>Genetic Algorithm
+                                    </h6>
+                                    <p class="small mb-0">
+                                        Evolves 8 pricing parameters over 100 generations using
+                                        tournament selection, uniform crossover, and Gaussian mutation.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="text-accent mb-2">
+                                        <i class="fas fa-server me-2"></i>Backend
+                                    </h6>
+                                    <p class="small mb-0">
+                                        Flask REST API with background threading for long-running
+                                        optimization jobs. Results cached in session storage.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="text-accent mb-2">
+                                        <i class="fas fa-palette me-2"></i>Frontend
+                                    </h6>
+                                    <p class="small mb-0">
+                                        Bootstrap 5 dark theme, Chart.js for bar/line charts,
+                                        Plotly for interactive 3D scatter and convergence plots.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Novel Features -->
+                    <h5 class="mt-4 mb-3">
+                        <i class="fas fa-star me-2 text-accent"></i>Novel Features
+                    </h5>
+                    <ul class="list-unstyled mb-4">
+                        {% set features = [
+                            ('chart-line',   'Real-time market simulation'),
+                            ('balance-scale','Multi-objective optimization (profit + satisfaction)'),
+                            ('shield-alt',   'Confidence scoring for recommendations'),
+                            ('sun',          'Seasonal adjustment factors'),
+                            ('store',        'Competition intensity modeling'),
+                            ('robot',        'AI chatbot for pricing explanations'),
+                            ('eye',          'SHAP-style explainability (waterfall + radar charts)'),
+                            ('brain',        'Demand forecasting via scikit-learn ensemble models')
+                        ] %}
+                        {% for icon, text in features %}
+                        <li class="d-flex align-items-center gap-2 mb-2">
+                            <span class="badge badge-accent p-2 rounded-2">
+                                <i class="fas fa-{{ icon }}"></i>
+                            </span>
+                            <span>{{ text }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- Real-World Impact -->
+                    <h5 class="mt-4 mb-3">
+                        <i class="fas fa-lightbulb me-2 text-accent"></i>Real-World Impact
+                    </h5>
+                    <p class="mb-3">
+                        Micro-businesses lack access to expensive pricing software. This tool provides:
+                    </p>
+                    <div class="row g-2 mb-4">
+                        {% for item in ['Data-driven pricing decisions','Automated market analysis',
+                                        'Risk-adjusted recommendations','Profit maximization strategies',
+                                        'Customer satisfaction preservation'] %}
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-2 p-2 rounded"
+                                 style="background:rgba(56,189,248,0.05);border:1px solid var(--border)">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span class="small">{{ item }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Data Flow Pipeline -->
+                    <h5 class="mt-4 mb-3">
+                        <i class="fas fa-project-diagram me-2 text-accent"></i>Data Flow
+                    </h5>
+                    <div class="d-flex align-items-center flex-wrap gap-2 justify-content-center mb-4">
+                        {% for step in ['CSV Upload','Data Preprocessing','Fuzzy System','Genetic Optimizer','Price Recommendations'] %}
+                        <span class="badge badge-accent px-3 py-2" style="font-size:0.8rem">{{ step }}</span>
+                        {% if not loop.last %}
+                            <i class="fas fa-arrow-right text-muted"></i>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <!-- Footer row -->
+                    <div class="text-center mt-4 pt-3" style="border-top:1px solid var(--border)">
+                        <p class="mb-0" style="color:var(--muted);font-size:0.85rem">
+                            <i class="fas fa-code-branch me-1"></i>
+                            Version 2.0 &nbsp;·&nbsp; Soft Computing Course Project &nbsp;·&nbsp;
+                            <span class="text-accent">Python · Flask · skfuzzy · scikit-learn</span>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

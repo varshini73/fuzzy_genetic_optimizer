@@ -1,0 +1,26 @@
+product_id,product_name,category,price,cost,quantity,revenue,customer_rating,competitor_price,season
+G001,Whole Milk 1gal,Dairy,4.29,2.80,1245,5341.05,4.2,4.49,All Season
+G002,White Bread 20oz,Bakery,2.99,1.20,892,2667.08,3.9,3.29,All Season
+G003,Large Eggs 12ct,Dairy,5.49,3.20,678,3722.22,4.5,5.99,All Season
+G004,Bananas 1lb,Produce,0.59,0.35,2345,1383.55,4.0,0.65,All Season
+G005,Chicken Breast 1lb,Meat,6.99,4.20,456,3187.44,4.3,7.49,All Season
+G006,Ground Beef 1lb,Meat,5.99,3.80,389,2330.11,4.1,6.29,All Season
+G007,Cheddar Cheese 8oz,Dairy,4.49,2.50,345,1549.05,4.4,4.99,All Season
+G008,Potato Chips 8oz,Snacks,3.99,1.80,567,2262.33,4.2,4.29,All Season
+G009,Coca-Cola 12pk,Beverages,6.99,3.50,234,1635.66,4.6,7.49,Summer
+G010,Bottled Water 24pk,Beverages,4.99,2.20,678,3383.22,4.1,5.49,Summer
+G011,Frozen Pizza,Frozen,5.99,2.80,345,2066.55,3.8,6.49,All Season
+G012,Vanilla Ice Cream,Frozen,4.99,2.20,234,1167.66,4.7,5.49,Summer
+G013,Toilet Paper 6pk,Household,7.99,3.80,456,3643.44,4.3,8.99,All Season
+G014,Paper Towels 2pk,Household,5.99,2.80,345,2066.55,4.0,6.49,All Season
+G015,Laundry Detergent,Household,12.99,5.50,123,1597.77,4.5,14.99,All Season
+G016,Dish Soap,Household,3.99,1.50,456,1819.44,4.2,4.49,All Season
+G017,Apple 1lb,Produce,1.99,1.20,567,1128.33,4.4,2.29,Fall
+G018,Orange Juice 64oz,Beverages,4.49,2.20,234,1050.66,4.3,4.99,All Season
+G019,Cereal 18oz,Breakfast,4.99,2.50,345,1721.55,4.1,5.49,All Season
+G020,Oatmeal 18oz,Breakfast,3.99,1.80,234,933.66,4.5,4.29,Winter
+G021,Peanut Butter 16oz,Pantry,4.49,2.20,278,1248.22,4.6,4.99,All Season
+G022,Grape Jelly 18oz,Pantry,3.49,1.50,189,659.61,4.2,3.99,All Season
+G023,Spaghetti 16oz,Pantry,1.99,0.80,567,1128.33,4.0,2.29,All Season
+G024,Pasta Sauce 24oz,Pantry,3.99,1.60,345,1376.55,4.1,4.49,All Season
+G025,Canned Tuna 5oz,Pantry,1.49,0.70,456,679.44,3.9,1.79,All Season

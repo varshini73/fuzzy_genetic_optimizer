@@ -1,0 +1,16 @@
+product_id,product_name,category,price,cost,quantity,revenue,customer_rating,competitor_price,season
+F001,Whey Protein 2lb,Protein,49.99,22.00,156,7798.44,4.6,54.99,All Season
+F002,Creatine Monohydrate,Supplements,19.99,8.00,234,4677.66,4.8,22.99,All Season
+F003,BCAA Powder,Supplements,24.99,10.50,178,4448.22,4.5,27.99,Summer
+F004,Pre-Workout 30serv,Energy,34.99,15.00,123,4303.77,4.4,39.99,All Season
+F005,Plant Protein 2lb,Protein,44.99,20.00,67,3014.33,4.7,49.99,All Season
+F006,Fish Oil 120ct,Health,18.99,7.50,189,3589.11,4.3,21.99,All Season
+F007,Multivitamin 90ct,Health,22.99,9.00,234,5379.66,4.2,24.99,All Season
+F008,Protein Bars 12pk,Snacks,24.99,11.00,345,8621.55,4.1,27.99,All Season
+F009,Energy Drink 12pk,Beverages,29.99,13.00,234,7017.66,4.0,32.99,Summer
+F010,Collagen Peptides,Beauty,29.99,12.50,89,2669.11,4.9,34.99,All Season
+F011,Greens Powder,Health,39.99,17.00,56,2239.44,4.5,44.99,All Season
+F012,Electrolyte Tabs,Hydration,14.99,5.50,456,6835.44,4.6,16.99,Summer
+F013,Casein Protein 2lb,Protein,54.99,24.00,34,1869.66,4.4,59.99,All Season
+F014,Weight Gainer 5lb,Mass,59.99,26.00,23,1379.77,4.2,64.99,Winter
+F015,Recovery Aminos,Recovery,27.99,12.00,134,3750.66,4.7,29.99,All Season

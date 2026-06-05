@@ -1,0 +1,51 @@
+product_id,product_name,category,price,cost,quantity,revenue,customer_rating,competitor_price,season
+G001,Premium Coffee Beans,Beverages,18.99,9.50,134,2544.66,4.8,21.99,All Season
+G002,Organic Green Tea,Beverages,12.99,5.50,267,3468.33,4.5,14.99,All Season
+G003,Sparkling Water 12pk,Beverages,8.99,3.50,456,4099.44,4.2,9.99,Summer
+G004,Protein Bars 6pk,Snacks,14.99,6.00,189,2833.11,4.3,16.99,All Season
+G005,Trail Mix,Snacks,7.99,3.20,345,2756.55,4.1,8.99,All Season
+G006,Potato Chips,Snacks,4.50,1.80,678,3051.00,4.0,4.99,All Season
+G007,Frozen Pizza,Frozen,8.99,3.50,234,2103.66,3.9,9.99,All Season
+G008,Ice Cream Pint,Frozen,5.99,2.20,456,2731.44,4.6,6.49,Summer
+G009,Frozen Vegetables,Frozen,3.99,1.50,567,2262.33,4.2,4.49,All Season
+G010,Chicken Breast Fresh,Meat,8.99,4.50,234,2103.66,4.4,9.49,All Season
+G011,Ground Beef,Meat,6.99,3.50,345,2411.55,4.3,7.49,All Season
+G012,Salmon Fillet,Seafood,14.99,8.50,89,1334.11,4.7,16.99,All Season
+G013,Organic Milk,Dairy,4.99,2.50,567,2829.33,4.5,5.49,All Season
+G014,Greek Yogurt,Dairy,5.99,2.80,345,2066.55,4.4,6.49,All Season
+G015,Cheddar Cheese,Dairy,6.99,3.20,234,1635.66,4.6,7.49,All Season
+G016,Whole Wheat Bread,Bakery,3.99,1.50,456,1819.44,4.1,4.49,All Season
+G017,Bagels 6pk,Bakery,5.99,2.00,234,1401.66,4.3,6.49,All Season
+G018,Croissants 4pk,Bakery,6.99,2.50,189,1321.11,4.5,7.49,All Season
+G019,Chocolate Cake,Dessert,15.99,6.00,56,895.44,4.7,17.99,All Season
+G020,Apple Pie,Dessert,12.99,4.50,78,1013.22,4.4,14.99,All Season
+G021,Laundry Detergent,Household,14.99,6.50,234,3507.66,4.5,16.99,All Season
+G022,Dish Soap,Household,4.99,1.80,456,2275.44,4.2,5.49,All Season
+G023,Paper Towels 6pk,Household,9.99,4.00,345,3446.55,4.3,11.99,All Season
+G024,Toilet Paper 12pk,Household,12.99,5.50,567,7365.33,4.6,14.99,All Season
+G025,Hand Soap,Personal Care,4.50,1.50,456,2052.00,4.1,4.99,All Season
+G026,Shampoo,Personal Care,7.99,2.80,234,1869.66,4.3,8.99,All Season
+G027,Conditioner,Personal Care,7.99,2.80,189,1510.11,4.2,8.99,All Season
+G028,Body Wash,Personal Care,6.99,2.50,345,2411.55,4.4,7.49,All Season
+G029,Toothpaste,Personal Care,4.99,1.80,567,2829.33,4.5,5.49,All Season
+G030,Deodorant,Personal Care,5.99,2.20,456,2731.44,4.0,6.49,All Season
+G031,LED Light Bulbs 4pk,Home Improvement,12.99,5.00,134,1740.66,4.6,14.99,All Season
+G032,Batteries AA 8pk,Home Improvement,8.99,3.50,267,2400.33,4.4,9.99,All Season
+G033,Extension Cord,Home Improvement,9.99,3.80,189,1888.11,4.2,11.99,All Season
+G034,Duct Tape,Home Improvement,5.99,2.00,345,2066.55,4.3,6.49,All Season
+G035,Measuring Tape,Home Improvement,7.99,3.00,123,982.77,4.5,8.99,All Season
+G036,Dog Food 5lb,Pet Supplies,16.99,7.50,89,1512.11,4.7,18.99,All Season
+G037,Cat Food 3lb,Pet Supplies,12.99,5.50,78,1013.22,4.6,14.99,All Season
+G038,Dog Treats,Pet Supplies,8.99,3.50,167,1501.33,4.4,9.99,All Season
+G039,Cat Litter 10lb,Pet Supplies,9.99,4.00,145,1448.55,4.3,11.99,All Season
+G040,Pet Toy,Pet Supplies,6.99,2.50,234,1635.66,4.1,7.99,All Season
+G041,Notebook 3pk,Office Supplies,5.99,2.00,456,2731.44,4.2,6.49,All Season
+G042,Pens 12pk,Office Supplies,4.99,1.50,678,3383.22,4.0,5.49,All Season
+G043,Sticky Notes 6pk,Office Supplies,6.99,2.50,345,2411.55,4.3,7.49,All Season
+G044,Printer Paper,Office Supplies,7.99,3.00,189,1510.11,4.4,8.99,All Season
+G045,Markers 8pk,Office Supplies,8.99,3.50,123,1105.77,4.5,9.99,All Season
+G046,First Aid Kit,Health,19.99,8.00,67,1339.33,4.7,22.99,All Season
+G047,Vitamins 60ct,Health,14.99,6.00,134,2008.66,4.5,16.99,All Season
+G048,Pain Reliever 100ct,Health,9.99,3.50,267,2667.33,4.6,10.99,All Season
+G049,Allergy Medicine,Health,12.99,5.00,89,1156.11,4.4,14.99,Spring
+G050,Cold Medicine,Health,11.99,4.50,156,1870.44,4.3,13.99,Winter

@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block title %}Detailed Results - Pricing Optimizer{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="fas fa-file-alt me-2"></i>
+            Detailed Optimization Results
+        </h2>
+        <div>
+            <a href="/dashboard" class="btn btn-outline-primary me-2">
+                <i class="fas fa-chart-pie me-2"></i>Dashboard
+            </a>
+            <button class="btn btn-success" id="exportDetailedBtn">
+                <i class="fas fa-download me-2"></i>Export Full Report
+            </button>
+        </div>
+    </div>
+    
+    <!-- Summary Statistics -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Optimization Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="detailedSummary">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fuzzy Logic Analysis -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Fuzzy Logic Rules Applied</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Rule ID</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fuzzyRulesTable">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">GA Parameter Importance</h5>
+                </div>
+                <div class="card-body">
+                    <div id="parameterImportanceChart" style="height: 350px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Full Recommendations Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">Complete Pricing Recommendations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="searchInput" 
+                               placeholder="Search products...">
+                    </div>
+                    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                        <table class="table table-hover" id="fullResultsTable">
+                            <thead>
+                                <tr>
+                                    <th>Product ID</th>
+                                    <th>Product Name</th>
+                                    <th>Current Price</th>
+                                    <th>Optimal Price</th>
+                                    <th>Change</th>
+                                    <th>Expected Profit</th>
+                                    <th>Confidence</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fullResultsBody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const taskId = localStorage.getItem('lastTaskId');
+    
+    if (!taskId) {
+        alert('No optimization results found. Please run optimization first.');
+        window.location.href = '/upload';
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/results/${taskId}`);
+        const results = await response.json();
+        
+        renderDetailedSummary(results);
+        renderFuzzyRules(results);
+        renderParameterImportance(results);
+        renderFullResultsTable(results);
+        
+        // Setup search
+        document.getElementById('searchInput').addEventListener('keyup', (e) => {
+            filterTable(e.target.value);
+        });
+        
+        // Setup export
+        document.getElementById('exportDetailedBtn').addEventListener('click', () => {
+            exportDetailedReport(results);
+        });
+        
+    } catch (error) {
+        console.error('Error loading results:', error);
+        alert('Error loading results. Please try again.');
+    }
+});
+
+function renderDetailedSummary(results) {
+    const summary = results.final_results;
+    const stats = results.summary_stats;
+    const fuzzy = results.fuzzy_results;
+    const ga = results.ga_results;
+    
+    const html = `
+        <div class="col-md-3 mb-3">
+            <div class="border rounded p-3 text-center">
+                <h6 class="text-muted">Products Analyzed</h6>
+                <h3>${stats.total_products}</h3>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="border rounded p-3 text-center">
+                <h6 class="text-muted">Avg Fuzzy Adjustment</h6>
+                <h3 class="${fuzzy.average_adjustment > 0 ? 'text-success' : 'text-danger'}">
+                    ${fuzzy.average_adjustment.toFixed(2)}%
+                </h3>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="border rounded p-3 text-center">
+                <h6 class="text-muted">GA Best Fitness</h6>
+                <h3>${ga.best_fitness.toFixed(4)}</h3>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="border rounded p-3 text-center">
+                <h6 class="text-muted">Generations</h6>
+                <h3>${ga.generations_executed}</h3>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="border rounded p-3">
+                <h6 class="text-muted">Optimal GA Parameters</h6>
+                <div class="row">
+                    ${Object.entries(ga.optimal_parameters).map(([key, value]) => `
+                        <div class="col-md-6">
+                            <small>${key.replace(/_/g, ' ')}:</small>
+                            <strong>${value.toFixed(4)}</strong>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="border rounded p-3">
+                <h6 class="text-muted">Fuzzy Adjustment Distribution</h6>
+                <div class="row">
+                    <div class="col-4">
+                        <small>Min:</small>
+                        <strong>${fuzzy.adjustment_distribution.min.toFixed(2)}%</strong>
+                    </div>
+                    <div class="col-4">
+                        <small>Max:</small>
+                        <strong>${fuzzy.adjustment_distribution.max.toFixed(2)}%</strong>
+                    </div>
+                    <div class="col-4">
+                        <small>Std Dev:</small>
+                        <strong>${fuzzy.adjustment_distribution.std.toFixed(2)}%</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('detailedSummary').innerHTML = html;
+}
+
+function renderFuzzyRules(results) {
+    const rules = results.fuzzy_results.rule_explanations;
+    const tbody = document.getElementById('fuzzyRulesTable');
+    
+    tbody.innerHTML = Object.entries(rules).map(([id, desc]) => `
+        <tr>
+            <td><span class="badge bg-info">${id}</span></td>
+            <td>${desc}</td>
+        </tr>
+    `).join('');
+}
+
+function renderParameterImportance(results) {
+    const importance = results.ga_results.parameter_importance;
+    
+    const data = [{
+        type: 'bar',
+        x: Object.values(importance),
+        y: Object.keys(importance).map(k => k.replace(/_/g, ' ')),
+        orientation: 'h',
+        marker: {
+            color: Object.values(importance).map(v => 
+                `rgba(54, 162, 235, ${0.3 + v * 0.7})`
+            )
+        }
+    }];
+    
+    const layout = {
+        title: 'Parameter Importance in Optimization',
+        xaxis: { title: 'Relative Importance', tickformat: ',.0%' },
+        margin: { l: 150, r: 20, t: 40, b: 40 },
+        height: 350
+    };
+    
+    Plotly.newPlot('parameterImportanceChart', data, layout);
+}
+
+function renderFullResultsTable(results) {
+    const recommendations = results.recommendations;
+    const tbody = document.getElementById('fullResultsBody');
+    
+    tbody.innerHTML = recommendations.map(rec => `
+        <tr class="result-row" data-search="${rec.product_name.toLowerCase()} ${rec.product_id.toLowerCase()}">
+            <td><code>${rec.product_id}</code></td>
+            <td><strong>${rec.product_name}</strong></td>
+            <td>$${rec.current_price.toFixed(2)}</td>
+            <td>$${rec.recommended_price.toFixed(2)}</td>
+            <td class="${rec.expected_impact.includes('+') ? 'text-success' : 'text-danger'} fw-bold">
+                ${rec.expected_impact}
+            </td>
+            <td>${rec.expected_profit_impact}</td>
+            <td>
+                <div class="d-flex align-items-center">
+                    <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                        <div class="progress-bar bg-${rec.risk_level === 'Low' ? 'success' : 
+                                                      rec.risk_level === 'Medium' ? 'warning' : 'danger'}" 
+                             style="width: ${rec.priority}%"></div>
+                    </div>
+                    <small>${rec.priority.toFixed(0)}%</small>
+                </div>
+            </td>
+            <td>
+                <span class="badge bg-${getActionColor(rec.expected_impact)}">
+                    ${getActionText(rec.expected_impact)}
+                </span>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function getActionColor(impact) {
+    if (impact.includes('+')) return 'success';
+    if (impact.includes('-')) return 'danger';
+    return 'secondary';
+}
+
+function getActionText(impact) {
+    const value = parseFloat(impact);
+    if (value > 10) return 'Significant Increase';
+    if (value > 0) return 'Slight Increase';
+    if (value < -10) return 'Significant Decrease';
+    if (value < 0) return 'Slight Decrease';
+    return 'Maintain';
+}
+
+function filterTable(searchTerm) {
+    const rows = document.querySelectorAll('.result-row');
+    const term = searchTerm.toLowerCase();
+    
+    rows.forEach(row => {
+        const searchData = row.getAttribute('data-search');
+        if (searchData.includes(term)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+function exportDetailedReport(results) {
+    const recommendations = results.recommendations;
+    const optimalParams = results.ga_results.optimal_parameters;
+    const fuzzyStats = results.fuzzy_results;
+    
+    let report = 'FUZZY-GENETIC PRICING OPTIMIZATION REPORT\n';
+    report += '='.repeat(50) + '\n\n';
+    
+    report += 'OPTIMIZATION SUMMARY\n';
+    report += '-'.repeat(30) + '\n';
+    report += `Products Analyzed: ${results.summary_stats.total_products}\n`;
+    report += `Average Price Change: ${results.summary_stats.avg_price_change.toFixed(2)}%\n`;
+    report += `Total Expected Profit: $${results.summary_stats.total_expected_profit.toFixed(2)}\n`;
+    report += `GA Best Fitness: ${results.ga_results.best_fitness.toFixed(4)}\n`;
+    report += `Generations: ${results.ga_results.generations_executed}\n\n`;
+    
+    report += 'OPTIMAL GA PARAMETERS\n';
+    report += '-'.repeat(30) + '\n';
+    Object.entries(optimalParams).forEach(([key, value]) => {
+        report += `${key}: ${value.toFixed(4)}\n`;
+    });
+    
+    report += '\nFUZZY LOGIC STATISTICS\n';
+    report += '-'.repeat(30) + '\n';
+    report += `Average Adjustment: ${fuzzyStats.average_adjustment.toFixed(2)}%\n`;
+    report += `Total Rules Applied: ${Object.keys(fuzzyStats.rule_explanations).length}\n\n`;
+    
+    report += 'DETAILED RECOMMENDATIONS\n';
+    report += '-'.repeat(30) + '\n';
+    recommendations.forEach((rec, i) => {
+        report += `\n${i+1}. ${rec.product_name} (${rec.product_id})\n`;
+        report += `   Current: $${rec.current_price.toFixed(2)} → Optimal: $${rec.recommended_price.toFixed(2)}\n`;
+        report += `   Impact: ${rec.expected_impact} | Priority: ${rec.priority.toFixed(0)}% | Risk: ${rec.risk_level}\n`;
+        report += `   Timeline: ${rec.implementation_timeline}\n`;
+    });
+    
+    // Download report
+    const blob = new Blob([report], {type: 'text/plain'});
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `pricing_report_${new Date().toISOString().split('T')[0]}.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+</script>
+
+<style>
+.progress {
+    background-color: #e9ecef;
+    border-radius: 10px;
+}
+
+.table code {
+    background: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+#fullResultsTable th {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+    box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1);
+}
+</style>
+{% endblock %}

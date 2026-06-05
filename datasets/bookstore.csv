@@ -1,0 +1,21 @@
+product_id,product_name,category,price,cost,quantity,revenue,customer_rating,competitor_price,season
+B001,Fiction Bestseller,Fiction,18.99,9.50,67,1272.33,4.5,19.99,All Season
+B002,Business Strategy,Business,24.99,12.00,45,1124.55,4.7,27.99,All Season
+B003,Cookbook Hardcover,Cooking,29.99,14.50,34,1019.66,4.8,34.99,Holiday
+B004,Children's Picture Book,Children,12.99,5.50,89,1156.11,4.6,14.99,All Season
+B005,Sci-Fi Paperback,Sci-Fi,9.99,4.20,123,1228.77,4.3,10.99,All Season
+B006,Self-Help Journal,Self-Help,15.99,6.80,56,895.44,4.4,17.99,January
+B007,Travel Guide 2024,Travel,22.99,10.50,78,1793.22,4.2,24.99,Summer
+B008,Poetry Collection,Poetry,14.99,6.50,23,344.77,4.9,16.99,All Season
+B009,History Hardcover,History,32.99,16.00,12,395.88,4.6,36.99,Holiday
+B010,Manga Volume 1,Manga,11.99,5.00,156,1870.44,4.7,12.99,All Season
+B011,Young Adult Novel,YA Fiction,13.99,6.00,134,1874.66,4.5,14.99,All Season
+B012,Mystery Thriller,Mystery,16.99,7.50,67,1138.33,4.3,18.99,All Season
+B013,Romance Paperback,Romance,8.99,3.80,189,1699.11,4.1,9.99,Summer
+B014,Biography Hardcover,Biography,27.99,13.00,34,951.66,4.8,29.99,Holiday
+B015,Science Book,Science,21.99,10.00,45,989.55,4.5,23.99,All Season
+B016,Art Book Coffee Table,Art,39.99,18.00,8,319.92,4.9,44.99,Holiday
+B017,Study Guide Math,Education,19.99,8.50,89,1779.11,4.0,21.99,Back to School
+B018,Language Learning Kit,Education,34.99,15.00,23,804.77,4.4,39.99,January
+B019,Coloring Book Adult,Hobby,9.99,3.50,156,1558.44,4.6,10.99,All Season
+B020,Puzzle Book,Hobby,7.99,3.00,234,1869.66,4.3,8.99,All Season

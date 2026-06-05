@@ -1,0 +1,21 @@
+product_id,product_name,category,price,cost,quantity,revenue,customer_rating,competitor_price,season
+PT001,Dog Food 15lb,Dog,34.99,18.00,234,8187.66,4.5,39.99,All Season
+PT002,Cat Food 7lb,Cat,22.99,11.00,189,4345.11,4.3,24.99,All Season
+PT003,Dog Treats 16oz,Dog,12.99,5.50,456,5923.44,4.6,14.99,All Season
+PT004,Cat Treats 6oz,Cat,5.99,2.50,567,3396.33,4.4,6.99,All Season
+PT005,Dog Chew Toy,Dog,9.99,3.80,345,3446.55,4.1,11.99,All Season
+PT006,Catnip Toy,Cat,4.99,1.80,234,1167.66,4.7,5.99,All Season
+PT007,Premium Dog Bed,Luxury,79.99,35.00,34,2719.66,4.8,89.99,Holiday
+PT008,Cat Scratching Post,Furniture,39.99,16.00,67,2679.33,4.5,44.99,All Season
+PT009,Fish Tank 10gal,Aquarium,49.99,22.00,23,1149.77,4.6,54.99,All Season
+PT010,Bird Seed 5lb,Bird,14.99,6.50,89,1334.11,4.2,16.99,All Season
+PT011,Hamster Bedding,Small Pet,8.99,3.50,156,1402.44,4.0,9.99,All Season
+PT012,Dog Shampoo,Grooming,12.99,4.80,234,3039.66,4.3,14.99,All Season
+PT013,Pet Nail Clippers,Grooming,9.99,3.20,189,1888.11,4.1,11.99,All Season
+PT014,Dog Collar Large,Accessories,15.99,6.00,134,2142.66,4.4,17.99,All Season
+PT015,Cat Collar Breakaway,Accessories,7.99,2.80,167,1334.33,4.5,8.99,All Season
+PT016,Puppy Training Pads,Supplies,19.99,8.50,345,6896.55,4.2,22.99,All Season
+PT017,Poop Bags 120ct,Supplies,9.99,3.50,567,5664.33,4.6,11.99,All Season
+PT018,Pet Dental Chews,Health,16.99,7.00,234,3975.66,4.7,18.99,All Season
+PT019,Flea Treatment 3pk,Health,34.99,14.00,89,3114.11,4.8,39.99,Summer
+PT020,Calming Treats,Health,22.99,9.50,123,2827.77,4.3,24.99,July 4th

@@ -1,0 +1,19 @@
+metric,value
+total_products,50
+original_total_profit,15923.04
+optimised_total_profit,23872.18
+profit_improvement,7949.14
+profit_improvement_pct,49.92
+original_total_revenue,8848942.17
+optimised_total_revenue,10837994.26
+revenue_improvement_pct,22.48
+avg_price_change_pct,22.04
+price_increases,50
+price_decreases,0
+no_change,0
+avg_fuzzy_adjustment,14.7
+best_params,"{'price_adjustment_multiplier': 1.5, 'demand_elasticity_factor': 0.1, 'satisfaction_adjustment': 0.5, 'profit_weight': 0.9, 'satisfaction_weight': 0.9, 'risk_factor': 0.234666, 'price_change_penalty': 0.0, 'inventory_factor': 0.81204}"
+generations,100
+population_size,50
+timestamp,20260407_161549
+run_id,763ee25d
